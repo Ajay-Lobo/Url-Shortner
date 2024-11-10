@@ -1,21 +1,31 @@
 import express from "express";
-import router from "./routes/url.js"; // Ensure this path is correct
-import connectDB from "./config/db.js"; // Ensure this path is correct
-
+import router from "./routes/url.js";
+import staticRouter from "./routes/staticRoutes.js";
+import connectDB from "./config/db.js";
+import path from "path";
+import { fileURLToPath } from 'url';
+import Url from "./models/url.js";
 const app = express();
 
-// Middleware to parse JSON request bodies
-app.use(express.json());
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Simple route for testing
-app.get("/", (req, res) => {
-  res.send("Hello World");
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.get("/", async (req, res) => {
+  const urls = await Url.find({});
+  return res.render("index", { urls: urls });
 });
 
-// Use the URL router for handling /api/url requests
-app.use("/api/url", router);
 
-// Connect to MongoDB and start the server
+app.use("/api/url", router);
+app.use("/", staticRouter);
+
+
 connectDB()
   .then(() => {
     app.listen(3000, () => {
@@ -24,5 +34,5 @@ connectDB()
   })
   .catch((error) => {
     console.error(`Error starting the server: ${error.message}`);
-    process.exit(1); 
+    process.exit(1);
   });

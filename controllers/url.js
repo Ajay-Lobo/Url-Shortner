@@ -12,7 +12,11 @@ const shortUrl = async (req, res) => {
       originalURL: url,
       visitHistory: [],
     });
-    return res.status(201).json({ id: shortid });
+   const urls = await Url.find({});
+    return res.render("index", { shortid: shortid,
+      urls: urls
+     });
+
   } catch (error) {
     console.error(`Error: ${error.message}`);
     return res.status(500).json({ error: "Internal server error" });
@@ -21,7 +25,7 @@ const shortUrl = async (req, res) => {
 
 const getUrl = async (req, res) => {
   try {
-    const { id } = req.params; // Get the ID from params correctly
+    const { id } = req.params; 
     console.log(id);
     const url = await Url.findOneAndUpdate(
       { shortID: id },

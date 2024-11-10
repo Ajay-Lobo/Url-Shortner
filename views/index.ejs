@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="/css/styles.css">
+
+  </head>
+  <body>
+    <h1>URL Shortener</h1>
+
+    <% if (locals.shortid) { %>
+    <p class="short-url">
+      Your Short URL is:
+      <a href="http://localhost:3000/api/url/<%= shortid %>"
+        >http://localhost:3000/api/url/<%= shortid %></a
+      >
+    </p>
+    <% } %>
+
+    <div class="form-container">
+      <form action="/api/url" method="post">
+        <label for="url">Enter Your Original URL:</label>
+        <input
+          type="text"
+          name="url"
+          id="url"
+          placeholder="https://www.example.com"
+          required
+        />
+        <button type="submit">Generate</button>
+      </form>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Original URL</th>
+          <th>Short URL</th>
+          <th>Clicks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% urls.forEach((url) => { %>
+        <tr>
+          <td><%= url.originalURL %></td>
+          <td>
+            <a href="http://localhost:3000/api/url/<%= url.shortID %>"
+              >http://localhost:3000/api/url/<%= url.shortID %></a
+            >
+          </td>
+          <td><%= url.visitHistory.length %></td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </body>
+</html>
