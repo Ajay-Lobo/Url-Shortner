@@ -12,9 +12,8 @@ const shortUrl = async (req, res) => {
       originalURL: url,
       visitHistory: [],
     });
-   const urls = await Url.find({});
-    return res.render("index", { shortid: shortid,
-      urls: urls
+ 
+    return res.render("index", { shortid: shortid     
      });
 
   } catch (error) {
