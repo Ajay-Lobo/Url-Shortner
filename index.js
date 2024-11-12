@@ -1,11 +1,13 @@
 import express from "express";
 import router from "./routes/url.js";
 import user from "./routes/user.js";
+import cookieParser from "cookie-parser";
 import staticRouter from "./routes/staticRoutes.js";
 import connectDB from "./config/db.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import fetchURL from "./middleware/fetchURL.js";
+import {restrictToLoggedinUserOnly} from "./middleware/auth.js";
 const app = express();
 
 app.set("view engine", "ejs");
@@ -16,12 +18,13 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(fetchURL);
 app.get("/", async (req, res) => {
   return res.render("index");
 });
 
-app.use("/api/url", router);
+app.use("/api/url", restrictToLoggedinUserOnly ,router);
 app.use("/", staticRouter);
 app.use("/user", user);
 

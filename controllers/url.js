@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid";
+
 import Url from "../models/url.js";
 const shortUrl = async (req, res) => {
   try {
@@ -11,6 +12,7 @@ const shortUrl = async (req, res) => {
       shortID: shortid,
       originalURL: url,
       visitHistory: [],
+      createdBy: req.user._id,
     });
  
     return res.render("index", { shortid: shortid     
